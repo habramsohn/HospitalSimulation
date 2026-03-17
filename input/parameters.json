@@ -1,0 +1,28 @@
+{"sim": {
+    "context": "Robot house. House full of robots.",
+    "personalities": {
+        "personality1": {
+            "name": "Mr. Robot",
+            "occupation": "Robot",
+            "personality": "Robotic",
+            "trueKnowledge": [],
+            "falseKnowledge": [],
+            "keyQuestions": [
+                "etc"
+            ],
+            "convoLimit": 1
+        },
+         "personality2": {
+            "name": "test",
+            "occupation": "test",
+            "personality": "test",
+            "trueKnowledge": [],
+            "falseKnowledge": [],
+            "keyQuestions": [
+                "etc"
+            ],
+            "convoLimit": 0
+        }
+    }
+}
+}

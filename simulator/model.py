@@ -33,6 +33,7 @@ class Personality:
         KEYS|NONKEYS
         """
         self.prompt = prompt
+        self.name = name
     
     async def chat(self, message):
         if not hasattr(self, 'session'):

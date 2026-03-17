@@ -4,9 +4,10 @@
         "Sandy": {
             "occupation": "Waitress",
             "personality": "Bored, nice",
-            "trueKnowledge": ["Burgers"],
+            "trueKnowledge": ["Burgers", "James"],
             "keyQuestions": [
-                "What's your favorite food?"
+                "What's your favorite food?",
+                "What's your brother's name?"
             ],
             "convoLimit": 1
         },

@@ -9,6 +9,7 @@ def personality_init(personalities_dict, context, api_key):
                 
         agent = Personality(api_key=api_key)
         
+        # Create self.prompt and self.name in agent object
         agent.promptBuild(
             context=context,
             name=p_params.get('name'),
@@ -25,16 +26,23 @@ def personality_init(personalities_dict, context, api_key):
     return agents
 
 async def conversation(agent): 
-    fin = False
-    
-    while fin == False:
+    print(f"--- Starting conversation with {agent.name} ---")
+    while True:
         message = input("message: ") 
+        
+        if message.upper() == "STOP":
+            break
+        
         response = await agent.chat(message)
         print(f"{agent.name}: {response}")
-    
-        if message == "STOP" or "DONE" in response:
-            fin = True
+        
+        if not hasattr(agent, 'session'):
+            print(f"--- Conversation with {agent.name} concluded. Score: {agent.score} ---")
+            break
             
 def run(agents):
+    score = 0
     for agent in agents.values():
         asyncio.run(conversation(agent))
+        score += agent.score
+    return score

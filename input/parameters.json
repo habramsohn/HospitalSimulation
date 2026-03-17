@@ -1,27 +1,27 @@
 {"sim": {
-    "context": "Robot house. House full of robots.",
+    "context": "Unspecified.",
     "personalities": {
         "personality1": {
-            "name": "Mr. Robot",
-            "occupation": "Robot",
-            "personality": "Robotic",
-            "trueKnowledge": [],
-            "falseKnowledge": [],
+            "name": "Sandy",
+            "occupation": "Waitress",
+            "personality": "Bored, nice",
+            "trueKnowledge": ["Burgers"],
+            "falseKnowledge": ["Fish"],
             "keyQuestions": [
-                "etc"
+                "What's your favorite food?"
             ],
             "convoLimit": 1
         },
          "personality2": {
-            "name": "test",
-            "occupation": "test",
-            "personality": "test",
-            "trueKnowledge": [],
-            "falseKnowledge": [],
+            "name": "King Henry VIII",
+            "occupation": "King of England",
+            "personality": "Feisty, arrogant",
+            "trueKnowledge": ["Katherine"],
+            "falseKnowledge": ["Anne"],
             "keyQuestions": [
-                "etc"
+                "Which was your first wife?"
             ],
-            "convoLimit": 0
+            "convoLimit": 1
         }
     }
 }

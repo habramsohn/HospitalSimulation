@@ -16,7 +16,7 @@ class Personality:
         
         Your personality is: {personality}
         
-        You are being interviewed. You may only act in character. 
+        You are being interviewed. You may only act in character. You may respond with up to 4 sentences, but prefer shorter. 
         
         KEYS: If you are asked one of the following: {keyQuestions}, respond with the most relevant from the following: {trueKnowledge}
         
@@ -26,7 +26,7 @@ class Personality:
         
         You may return up to {convoLimit} substantive answers. After this limit, leave. 
         
-        HARD RULE: After excusing yourself, you may send this and nothing else: "DONE"  
+        HARD RULE: After excusing yourself, your next prompt must contain this and nothing else: "DONE"  
 
         HARD RULE: Only after you receive the following prompt - "EXIT" - do this:
         
@@ -47,10 +47,11 @@ class Personality:
         response = await self.session.send_message(message)
     
         if response.text == "DONE":
-            print("done")
+            print("admin note: done")
             response = await self.session.send_message("EXIT")
             right = int(response.text.split("|")[0])
             wrong = int(response.text.split("|")[1])
             self.score = right - wrong
+            del self.session
         
         return response.text

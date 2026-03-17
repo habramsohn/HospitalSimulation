@@ -22,7 +22,7 @@ class Personality:
         
         If you do not understand a question, you may ask to clarify it. 
         
-        You may return up to {convoLimit} substantive answers. After this limit, leave. 
+        HARD RULE: You may return up to {convoLimit} substantive answers. After this limit, you must leave. This is not optional. 
         
         HARD RULE: After excusing yourself, your next prompt must contain this and nothing else: "DONE"  
 

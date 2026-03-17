@@ -1,8 +1,7 @@
 {"sim": {
     "context": "Unspecified.",
     "personalities": {
-        "personality1": {
-            "name": "Sandy",
+        "Sandy": {
             "occupation": "Waitress",
             "personality": "Bored, nice",
             "trueKnowledge": ["Burgers"],
@@ -11,8 +10,7 @@
             ],
             "convoLimit": 1
         },
-         "personality2": {
-            "name": "King Henry VIII",
+         "King Henry VIII": {
             "occupation": "King of England",
             "personality": "Feisty, arrogant",
             "trueKnowledge": ["Katherine"],

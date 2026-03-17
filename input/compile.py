@@ -9,4 +9,3 @@ with open(params_path, 'r') as f:
 
 context = data['sim']['context']
 personalities = data['sim']['personalities']
-names = list(personalities.keys())

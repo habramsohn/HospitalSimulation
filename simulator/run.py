@@ -5,14 +5,14 @@ def personality_init(personalities_dict, context, api_key):
     
     agents = {}
     
-    for p_id, p_params in personalities_dict.items():
+    for name, p_params in personalities_dict.items():
                 
         agent = Personality(api_key=api_key)
         
         # Create self.prompt and self.name in agent object
         agent.promptBuild(
             context=context,
-            name=p_params.get('name'),
+            name=name,
             occupation=p_params.get('occupation'),
             personality=p_params.get('personality'),
             keyQuestions=p_params.get('keyQuestions'),
@@ -20,7 +20,7 @@ def personality_init(personalities_dict, context, api_key):
             convoLimit=p_params.get('convoLimit')
         )
         
-        agents[p_id] = agent
+        agents[name] = agent
     
     return agents
 

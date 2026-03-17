@@ -32,7 +32,6 @@ class Personality:
         
         KEYS|NONKEYS
         """
-        self.name = name
         self.prompt = prompt
     
     async def chat(self, message):

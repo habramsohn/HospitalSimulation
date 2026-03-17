@@ -6,7 +6,6 @@
             "occupation": "Waitress",
             "personality": "Bored, nice",
             "trueKnowledge": ["Burgers"],
-            "falseKnowledge": ["Fish"],
             "keyQuestions": [
                 "What's your favorite food?"
             ],
@@ -17,7 +16,6 @@
             "occupation": "King of England",
             "personality": "Feisty, arrogant",
             "trueKnowledge": ["Katherine"],
-            "falseKnowledge": ["Anne"],
             "keyQuestions": [
                 "Which was your first wife?"
             ],

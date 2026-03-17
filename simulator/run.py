@@ -17,7 +17,6 @@ def personality_init(personalities_dict, context, api_key):
             personality=p_params.get('personality'),
             keyQuestions=p_params.get('keyQuestions'),
             trueKnowledge=p_params.get('trueKnowledge'),
-            falseKnowledge=p_params.get('falseKnowledge'),
             convoLimit=p_params.get('convoLimit')
         )
         
@@ -40,6 +39,7 @@ async def conversation(agent):
             print(f"--- Conversation with {agent.name} concluded. Score: {agent.score} ---")
             break
             
+# Note; replace with a selection function if desired
 def run(agents):
     score = 0
     for agent in agents.values():

@@ -8,7 +8,7 @@ class Personality:
         self.score = 0
         self.prompt = None
 
-    def promptBuild(self, context, name, occupation, personality, keyQuestions, trueKnowledge, falseKnowledge, convoLimit):
+    def promptBuild(self, context, name, occupation, personality, keyQuestions, trueKnowledge, convoLimit):
         prompt = f"""
         The scenario: {context}
         
@@ -20,8 +20,6 @@ class Personality:
         
         KEYS: If you are asked one of the following: {keyQuestions}, respond with the most relevant from the following: {trueKnowledge}
         
-        WRONGS: If you are asked an irrelevant, rude, or otherwise insufficient question, respond with the most relevant from the following: {falseKnowledge}
-        
         If you do not understand a question, you may ask to clarify it. 
         
         You may return up to {convoLimit} substantive answers. After this limit, leave. 
@@ -32,7 +30,7 @@ class Personality:
         
         Report each of the following data as a single integer in the specified format:
         
-        KEYS|WRONGS
+        KEYS|NONKEYS
         """
         self.name = name
         self.prompt = prompt

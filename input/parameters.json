@@ -1,15 +1,14 @@
 {"sim": {
-    "context": "Unspecified.",
+    "context": "Hospital setting.",
     "personalities": {
         "Sandy": {
-            "occupation": "Waitress",
+            "occupation": "Nurse",
             "personality": "Bored, nice",
-            "trueKnowledge": ["Burgers", "James"],
+            "trueKnowledge": ["Cleanliness"],
             "keyQuestions": [
-                "What's your favorite food?",
-                "What's your brother's name?"
+                "What's the biggest problem at this hospital?"
             ],
-            "convoLimit": 1
+            "convoLimit": 2
         },
          "King Henry VIII": {
             "occupation": "King of England",

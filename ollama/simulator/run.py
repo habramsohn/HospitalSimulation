@@ -1,5 +1,5 @@
 import asyncio
-from simulator.omodel import Personality
+from ollama.simulator.model import Personality
 
 def personality_init(personalities_dict, context):
     

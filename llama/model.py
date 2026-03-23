@@ -1,5 +1,6 @@
 import re
 import httpx
+from modelClass import Personality
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
 OLLAMA_MODEL = "hermes3:8b"
@@ -37,7 +38,7 @@ async def ollama_call(messages, max_tokens):
         response.raise_for_status()
         return response.json()["message"]["content"].strip()
 
-class Personality:
+class Agent(Personality):
 
     def __init__(self):
         self.prompt = None

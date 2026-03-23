@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 from compile import *
 import gemini as g
 from gemini import main
-import ollama as o
-from ollama import main
+import llama as l
+from llama import main 
 
 load_dotenv()
 api_key = os.getenv('KEY')
@@ -16,5 +16,5 @@ if __name__ == "__main__":
         agents = g.main.personality_init(personalities, context, api_key)
         g.main.run(agents)
     elif choice == "2": 
-        agents = o.personality_init(personalities, context)
-        o.main.run(agents)
+        agents = l.main.personality_init(personalities, context)
+        l.main.run(agents)

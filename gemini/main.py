@@ -33,13 +33,14 @@ async def conversation(agent):
         
         if message.upper() == "STOP":
             break
-        
-        try:
-            response = await agent.chat(message)
-            print(f"{agent.name}: {response}")
-        except Exception as e: 
-            print(e)
-            response = await agent.chat(message)
+        loop = True
+        while loop == True:
+            try:
+                response = await agent.chat(message)
+                print(f"{agent.name}: {response}")
+                loop = False
+            except Exception as e: 
+                print(e)
         
         if not hasattr(agent, 'session'):
             print(f"--- Conversation with {agent.name} concluded. Score: {agent.score} ---")

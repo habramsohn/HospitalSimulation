@@ -3,8 +3,6 @@ from dotenv import load_dotenv
 from compile import *
 import gemini as g
 from gemini import main
-import llama as l
-from llama import main 
 
 load_dotenv()
 api_key = os.getenv('KEY')

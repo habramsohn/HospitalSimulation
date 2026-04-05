@@ -1,0 +1,175 @@
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --bg-color: #f8f9fa;
+    --sidebar-bg: #ffffff;
+    --border-color: #edf2f7;
+    --sidebar-width: 200px;
+    --content-max-width: 800px;
+    --radius: 12px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    overflow: hidden;
+}
+
+/* Sidebar - Vertical on the left */
+#selection {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    text-align: center;
+}
+
+
+#select_bot {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background: #fcfcfc;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.radio-group:hover {
+    border-color: var(--accent-color);
+    background: #f1f5f9;
+}
+
+.radio-group input[type="radio"] {
+    margin-right: 12px;
+}
+
+#select_submit {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#header {
+    width: auto;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+#selected {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    background: white;
+    margin: 0 auto;
+    /* display: inline-block; */
+}
+
+/* Main Content Area - Explicit Vertical Center Stack */
+#main-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    align-content: start;
+    padding: 4rem 2rem;
+    overflow-y: auto;
+    gap: 2rem;
+}
+
+/* Chat Section Layout */
+#form-container {
+    width: 100%;
+    max-width: var(--content-max-width);
+    display: contents; /* Flattens children into the main-content grid for strict vertical order */
+}
+
+/* Order: 2. Chat Window */
+#chat {
+    width: 100%;
+    max-width: var(--content-max-width);
+    height: 400px;
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+/* Order: 3. User Input Box */
+#user {
+    width: 100%;
+    max-width: var(--content-max-width);
+    display: contents;
+}
+
+textarea {
+    width: 100%;
+    max-width: var(--content-max-width);
+    min-height: 120px;
+    padding: 1.5rem;
+    font-family: inherit;
+    font-size: 1.1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    outline: none;
+    resize: none;
+    background: white;
+}
+
+/* Order: 4. Submit Button */
+#chat_submit {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 1rem 4rem;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    transition: all 0.2s;
+}
+
+#chat_submit:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+#loading {
+    display: none;
+}
+
+.htmx-request#loading, 
+.htmx-request #loading {
+    display: block;
+}
+
+#bot {
+    margin-bottom: 10px;
+}

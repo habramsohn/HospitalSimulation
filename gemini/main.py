@@ -26,30 +26,9 @@ def personality_init(personalities_dict, context, api_key):
     
     return agents
 
-async def conversation(agent): 
-    print(f"--- Starting conversation with {agent.name} ---")
-    while True:
-        message = input("message: ") 
-        
-        if message.upper() == "STOP":
-            break
-        loop = True
-        while loop == True:
-            try:
-                response = await agent.chat(message)
-                print(f"{agent.name}: {response}")
-                loop = False
-            except Exception as e: 
-                print(e)
-        
-        if not hasattr(agent, 'session'):
-            print(f"--- Conversation with {agent.name} concluded. Score: {agent.score} ---")
-            break
+def conversation(agent, message): 
+    response = agent.chat(message)
+    return response
             
-# Note; replace with a selection function if desired
-def run(agents):
-    score = 0
-    for agent in agents.values():
-        asyncio.run(conversation(agent))
-        score += agent.score
-    return score
+def run(agent, message):
+    return conversation(agent, message)

@@ -1,4 +1,3 @@
-import asyncio
 import google.genai as genai
 
 class Agent:
@@ -26,29 +25,22 @@ class Agent:
         
         If you do not understand a question, you may ask to clarify it. 
         
-        HARD RULE: You may return up to {convoLimit} substantive answers. After this limit, you must leave. This is not optional. 
-        
-        HARD RULE: After excusing yourself, your next prompt must contain this and nothing else: "DONE"  
+        HARD RULE: You may return up to {convoLimit} substantive answers. After this limit, you may only respond with "DONE". This is not optional. 
 
         HARD RULE: If you receive the following prompt, end the session: "EXIT" 
         """
         self.prompt = prompt
         self.name = name
     
-    async def chat(self, message):
+    def chat(self, message):
         if not hasattr(self, 'session'):
-            self.session = self.client.aio.chats.create(
+            self.session = self.client.chats.create(
                 model="gemini-3.1-flash-lite-preview",
                 config={'system_instruction': self.prompt}
             )
 
-        response = await self.session.send_message(message)
+        response = self.session.send_message(message)
     
-        if response.text == "DONE":
-            print("admin note: done")
-            response = await self.session.send_message("EXIT")
-            del self.session        
-
         return response.text
         
         

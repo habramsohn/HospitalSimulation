@@ -1,12 +1,45 @@
 <!DOCTYPE html>
-<html lang = "en">
+<html lang="en">
 <head>
     <title>Six Sigma Simulator</title>
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    
+    <div id="selection">
+        <form id="select_bot" hx-get="/select" hx-target="#selected" hx-on::before-request="document.getElementById('bot').innerHTML = ''">
+            <label for="Nurse">Nurse</label>
+            <input class="radio-group" type="radio" id="Nurse" name="selection" value="Nurse">
+            <label for="Doctor">Doctor</label>
+            <input class="radio-group" type="radio" id="Doctor" name="selection" value="Doctor">
+            <input type="submit" id="select_submit" hx-target="#bot">
+        </form>
+        <div id="header" class="center">
+        <p>Currently selected:</p>
+        <p id="selected"></p></div>
+    </div>
+    <div id="main-content">
+    <div id="chat" class="center">
+      <p id="bot"></p>
+      <p id="loading">Loading...</p>
+    </div>
+    <div class="center" id="form-container">                                                                                                                             
+        <form id="user" hx-post="/send" hx-swap="beforeend" hx-target="#bot" hx-on::before-request="this.reset()" hx-indicator="#loading">                                                                             
+            <textarea id="query" 
+                name="query" 
+                hx-trigger="keyup[key=='Enter'&&!shiftKey]" 
+                hx-on:keydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); htmx.trigger(this.form, 'submit'); }"></textarea>                                                        
+            <input type="submit" id="chat_submit">                                                                                        
+        </form>   
+    <div id="finish">
+        <form hx-target="#selected" hx-on::before-request="document.getElementById('selected').innerHTML = ''"> 
+            <input type="button" id="finish_btn" value="End Session" hx-get="/finish"
+            hx-target="#bot">
+        </form>
+    </div>
+    </div>
+</div>
 </body>
 </html>

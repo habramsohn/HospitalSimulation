@@ -36,8 +36,8 @@ def selection(request: Request, selection: str):
 async def chat(request: Request, query: str = Form(...)):
     try:
         response = g.main.run(active_agent, query)
-        message = "User: " + "".join(list(query)) + "<br>" \
-            + f"{active_agent.name}: " + response + "<br>"
+        message = "User: " + "".join(list(query)) + "<br> <br>" \
+            + f"{active_agent.name}: " + response + "<br> <br>"
     except NameError:  
          message = "Please select a bot. <br>"
     return HTMLResponse(message)

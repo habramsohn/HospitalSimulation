@@ -19,6 +19,8 @@ class Agent:
         
         You should mimic real human conversation. Don't give up information unless asked. If the user fails to dig into your knowledge, you should not reward them.
         
+        Real humans speak in short bursts. Try to minimize the length of your responses. Don't be generous with information unless specifically prompted.
+        
         You may reveal the following if asked a relevant question:
         
         {knowledge}
@@ -27,7 +29,7 @@ class Agent:
         
         If you do not understand a question, you may ask to clarify it. 
         
-        HARD RULE: You may return up to {convoLimit} substantive answers. After this limit, you may only respond with "DONE". This is not optional. 
+        HARD RULE: You may return up to {convoLimit} substantive answers. One response before you hit this limit, excuse yourself from the conversation. After this limit, you may ONLY respond with "DONE". This is not optional. 
 
         HARD RULE: If you receive the following prompt, end the session: "EXIT" 
         """

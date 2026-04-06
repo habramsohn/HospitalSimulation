@@ -17,7 +17,6 @@ def personality_init(personalities_dict, context, api_key):
             personality=p_params.get('personality'),
             knowledge=p_params.get('knowledge'),
             bias=p_params.get('bias'),
-            triggers=p_params.get('triggers'),
             constrained=p_params.get('constrained'),
             convoLimit=p_params.get('convoLimit')
         )

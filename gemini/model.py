@@ -40,7 +40,8 @@ class Agent:
         if not hasattr(self, 'session'):
             self.session = self.client.chats.create(
                 model="gemini-3.1-flash-lite-preview",
-                config={'system_instruction': self.prompt}
+                config={'system_instruction': self.prompt,
+                        'temperature': 1.5}
             )
 
         response = self.session.send_message(message)

@@ -173,3 +173,7 @@ textarea {
 #bot {
     margin-bottom: 10px;
 }
+
+#time_left {
+outline: 3px solid red !important;
+display: inline-block;}

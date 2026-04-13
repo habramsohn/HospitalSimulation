@@ -19,11 +19,11 @@
         <div id="header" class="center">
         <p>Currently selected:</p>
         <p class="selected" id="selected"></p></div>
+        <input class='left_button' type="button" id="start_button" value="Start" hidden hx-target="#time_left" onclick="startTimer()">
+        <input class='left_button' type="button" id="stop_button" value="Stop" hidden onclick="stopTimer()">
         <p class="selected" id="time_element" hidden>Time:</p>
         <div id="time_left" hidden>
         </div>
-        <input class='left_button' type="button" id="start_button" value="Start" hidden hx-target="#time_left" onclick="startTimer()">
-        <input class='left_button' type="button" id="stop_button" value="Stop" hidden onclick="stopTimer()">
     </div>
     <div id="main-content">
     <div id="chat" class="center">
@@ -47,7 +47,7 @@
     </div>
 </div>
 <script> 
-let duration = 60 * 5;
+let duration;
 let timerInterval;
 
 function showTime() {
@@ -88,7 +88,7 @@ function stopTimer() {
 }
 
 function resetTimer() {
-    duration = 60 * 5;
+    duration = 60 * 1;
     updateDisplay(duration);
     stopTimer();
 }

@@ -30,14 +30,15 @@ def landing(request: Request):
 @app.get("/select")
 def selection(request: Request, selection: str):
     global active_agent 
+    global done
+    done = False
     active_agent = agents[selection]
-    html = f"<pre> {selection}</pre>"
+    html = f"<pre>{selection}</pre>"
     return HTMLResponse(html)
 
 @app.post("/send")
 async def chat(request: Request, query: str = Form(...)):
     global done
-    print(done)
     try:
         if done == False:
             response = g.main.run(active_agent, query)

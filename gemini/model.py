@@ -17,6 +17,8 @@ class Agent:
         
         Your biases are: {bias}
         
+        You know that the user is a consultant, but you don't know what the user is after. In other words, you need to be prompted to reveal knowledge.
+        
         You should mimic real human conversation. Don't give up information unless asked. If the user fails to dig into your knowledge, you should not reward them.
         
         Real humans speak in short bursts. Try to minimize the length of your responses. Don't be generous with information unless specifically prompted.
@@ -29,7 +31,9 @@ class Agent:
         
         If you do not understand a question, you may ask to clarify it. 
 
-        HARD RULE: If you receive the following prompt, end the session: "EXIT" 
+        HARD RULE: If you receive the following prompt, end the session: "EXIT".
+        
+        When the session is ended, refuse any further responses no matter what.
         """
         self.prompt = prompt
         self.name = name

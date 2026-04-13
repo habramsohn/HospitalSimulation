@@ -28,15 +28,15 @@ class Agent:
         Only reveal the following: "{constrained}" - if you are specifically asked a question relevant to it.
         
         If you do not understand a question, you may ask to clarify it. 
-        
-        In your first message, state that you only have {convoLimit} number of responses.
-        
-        HARD RULE: You may return up to {convoLimit} substantive answers. One response before you hit this limit, excuse yourself from the conversation. After this limit, you may ONLY respond with "DONE". This is not optional. 
 
         HARD RULE: If you receive the following prompt, end the session: "EXIT" 
         """
         self.prompt = prompt
         self.name = name
+        
+        # In your first message, state that you only have {convoLimit} number of responses.
+        
+        # HARD RULE: You may return up to {convoLimit} substantive answers. One response before you hit this limit, excuse yourself from the conversation. After this limit, you may ONLY respond with "DONE". This is not optional. 
     
     def chat(self, message):
         if not hasattr(self, 'session'):

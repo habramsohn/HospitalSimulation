@@ -14,11 +14,16 @@
             <input class="radio-group" type="radio" id="Nurse" name="selection" value="Nurse">
             <label for="Doctor">Doctor</label>
             <input class="radio-group" type="radio" id="Doctor" name="selection" value="Doctor">
-            <input type="submit" id="select_submit" hx-target="#bot">
+            <input class='left_button' type="submit" id="select_submit" hx-target="#bot" value="Select" onclick="showTime();resetTimer()">
         </form>
         <div id="header" class="center">
         <p>Currently selected:</p>
-        <p id="selected"></p></div>
+        <p class="selected" id="selected"></p></div>
+        <p class="selected" id="time_element" hidden>Time:</p>
+        <div id="time_left" hidden>
+        </div>
+        <input class='left_button' type="button" id="start_button" value="Start" hidden hx-target="#time_left" onclick="startTimer()">
+        <input class='left_button' type="button" id="stop_button" value="Stop" hidden onclick="stopTimer()">
     </div>
     <div id="main-content">
     <div id="chat" class="center">
@@ -36,10 +41,57 @@
     <div id="finish">
         <form hx-target="#selected" hx-on::before-request="document.getElementById('selected').innerHTML = ''"> 
             <input type="button" id="finish_btn" value="End Session" hx-get="/finish"
-            hx-target="#bot">
+            hx-target="#bot" onclick="resetTimer()">
         </form>
     </div>
     </div>
 </div>
+<script> 
+let duration = 60 * 5;
+let timerInterval;
+
+function showTime() {
+    startButton = document.getElementById('start_button');
+    stopButton = document.getElementById('stop_button');
+    timeElement = document.getElementById('time_element');
+    timeLeft = document.getElementById('time_left');
+    startButton.hidden = false;
+    stopButton.hidden = false;
+    timeElement.hidden = false;
+    timeLeft.hidden = false;
+}
+
+function updateDisplay(duration) {
+    const mins = Math.floor(duration / 60);
+    const secs = duration % 60;
+    timeLeft.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function startTimer() {
+    timerInterval = setInterval(() => {
+        if (duration > 0) {
+            duration--;
+            updateDisplay(duration);
+        } else {
+            stopTimer();
+            timeLeft.textContent = "Conversation Over";
+            htmx.ajax('POST', '/timer-finished', {
+                swap: 'none'  
+            });
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+}
+
+function resetTimer() {
+    duration = 60 * 5;
+    updateDisplay(duration);
+    stopTimer();
+}
+</script>
 </body>
 </html>

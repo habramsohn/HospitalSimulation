@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from gemini.compile import *
 import gemini as g
 from gemini import main
-from fastapi import FastAPI, Request, UploadFile, File, Form
+from fastapi import FastAPI, Request, File, Form, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -14,6 +14,8 @@ api_key = os.getenv('KEY')
 
 agents = g.main.personality_init(personalities, context, api_key)
 print(agents)
+
+done = False
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -34,10 +36,17 @@ def selection(request: Request, selection: str):
 
 @app.post("/send")
 async def chat(request: Request, query: str = Form(...)):
+    global done
+    print(done)
     try:
-        response = g.main.run(active_agent, query)
-        message = "User: " + "".join(list(query)) + "<br> <br>" \
-            + f"{active_agent.name}: " + response + "<br> <br>"
+        if done == False:
+            response = g.main.run(active_agent, query)
+            message = "User: " + "".join(list(query)) + "<br> <br>" \
+                + f"{active_agent.name}: " + response + "<br> <br>"
+        elif done == True:
+            query = "EXIT"
+            response = g.main.run(active_agent, query)
+            message = response + "<br> <br>"
     except NameError:  
          message = "Please select a bot. <br>"
     return HTMLResponse(message)
@@ -48,6 +57,12 @@ def close(request: Request):
     active_agent = agents['Error']
     message = "Session ended."
     return HTMLResponse(message)
+
+@app.post('/timer-finished')
+def finished(request: Request):
+    global done
+    done = True
+    return Response(status_code=204)
 
 if __name__ == "__main__":
     #print(agents)

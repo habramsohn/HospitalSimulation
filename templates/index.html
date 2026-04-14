@@ -19,6 +19,7 @@
             <label for="Maintenance Engineer">Maintenance Engineer</label>
             <input class="radio-group" type="radio" id="Maintenance Engineer" name="selection" value="Maintenance Engineer">
             <label for="Custodian">Custodian</label>
+            <input class="radio-group" type="radio" id="Custodian" name="selection" value="Custodian">
             <input class='left_button' type="submit" id="select_submit" hx-target="#bot" value="Select" onclick="showTime();resetTimer()">
         </form>
         <div id="header" class="center">
@@ -93,7 +94,7 @@ function stopTimer() {
 }
 
 function resetTimer() {
-    duration = 60 * 1;
+    duration = 60 * 5;
     updateDisplay(duration);
     stopTimer();
 }

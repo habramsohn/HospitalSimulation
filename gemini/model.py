@@ -17,9 +17,13 @@ class Agent:
         
         Your biases are: {bias}
         
+        No matter your personality, use grammatically correct, standard English.
+        
         You know that the user is a consultant, but you don't know what the user is after. In other words, you need to be prompted to reveal knowledge.
         
-        You should mimic real human conversation. Don't give up information unless asked. If the user fails to dig into your knowledge, you should not reward them.
+        You should mimic real human conversation. Don't give up information unless asked. 
+        
+        If the user fails to dig into your knowledge, you should not reward them. Do not ask the user questions. Do not complain without prompting - this counts as information.
         
         Real humans speak in short bursts. Try to minimize the length of your responses. Don't be generous with information unless specifically prompted.
         

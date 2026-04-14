@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from gemini.compile import *
 import gemini as g
 from gemini import main
-from fastapi import FastAPI, Request, File, Form, Response
+from fastapi import FastAPI, Request, Form, Response
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -49,7 +49,7 @@ async def chat(request: Request, query: str = Form(...)):
             response = g.main.run(active_agent, query)
             message = response + "<br> <br>"
     except NameError:  
-         message = "Please select a bot. <br>"
+         message = "Please select a bot. <br> <br>"
     return HTMLResponse(message)
 
 @app.get("/finish")

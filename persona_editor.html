@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Persona Editor — Hospital Simulation</title>
+
+
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Header ─── */
+header {
+  background: #1a5f7a;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+  z-index: 10;
+}
+header .title { flex: 1; }
+header h1 { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
+header p  { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+
+/* ─── Buttons ─── */
+.btn {
+  padding: 7px 14px; border-radius: 5px; border: none;
+  cursor: pointer; font-size: 13px; font-weight: 500;
+  transition: background 0.15s, box-shadow 0.15s; display: inline-flex;
+  align-items: center; gap: 5px;
+}
+.btn-ghost {
+  background: rgba(255,255,255,0.15); color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.25); }
+.btn-success { background: #2e7d32; color: white; }
+.btn-success:hover { background: #1b5e20; }
+.btn-add {
+  background: #eef6fa; color: #1a5f7a;
+  border: 1px dashed #7ab8cf; font-size: 12px; padding: 6px 12px;
+}
+.btn-add:hover { background: #d8edf5; }
+.btn-remove {
+  background: transparent; color: #b71c1c;
+  border: 1px solid #ef9a9a; font-size: 11px;
+  padding: 3px 9px; border-radius: 4px; cursor: pointer;
+}
+.btn-remove:hover { background: #fdecea; }
+.btn-danger-zone {
+  background: transparent; color: #c62828;
+  border: 1px solid #c62828; font-size: 12px;
+  padding: 6px 14px; border-radius: 5px; cursor: pointer;
+}
+.btn-danger-zone:hover { background: #fdecea; }
+
+/* ─── Layout ─── */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ─── Sidebar ─── */
+.sidebar {
+  width: 210px; background: #fff;
+  border-right: 1px solid #dde1ec;
+  display: flex; flex-direction: column;
+  flex-shrink: 0; overflow: hidden;
+}
+.sidebar-section-label {
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.9px;
+  color: #9298b0; padding: 14px 15px 5px;
+}
+.sidebar-item {
+  padding: 9px 15px; cursor: pointer; font-size: 13px;
+  color: #3a3f5c; border-left: 3px solid transparent;
+  transition: all 0.12s; display: flex; align-items: center; gap: 9px;
+  user-select: none;
+}
+.sidebar-item:hover { background: #f4f6fb; }
+.sidebar-item.active {
+  background: #e6f3f8; border-left-color: #1a5f7a;
+  color: #1a5f7a; font-weight: 600;
+}
+.sidebar-item .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #1a5f7a; flex-shrink: 0; opacity: 0.7;
+}
+.sidebar-personas { flex: 1; overflow-y: auto; }
+.sidebar-footer { padding: 10px 12px; border-top: 1px solid #dde1ec; }
+
+/* ─── Main area ─── */
+.main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.content { flex: 1; overflow-y: auto; padding: 24px 28px; }
+
+/* ─── Section header ─── */
+.section-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px; padding-bottom: 14px;
+  border-bottom: 2px solid #e4e8f0;
+}
+.section-header h2 { font-size: 18px; font-weight: 700; color: #1a1a2e; }
+.section-header .subtitle { font-size: 12px; color: #8a8fa3; margin-top: 3px; }
+
+/* ─── Form elements ─── */
+.form-group { margin-bottom: 20px; }
+.form-group > label {
+  display: block; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: #5a6070; margin-bottom: 5px;
+}
+.form-hint {
+  font-size: 11px; color: #9298b0; margin-bottom: 6px;
+  font-style: italic;
+}
+input[type="text"], input[type="number"], textarea, select {
+  width: 100%; padding: 9px 11px;
+  border: 1px solid #d0d5e5; border-radius: 5px;
+  font-size: 13px; color: #1a1a2e;
+  background: #fafbfd; font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input[type="text"]:focus, input[type="number"]:focus,
+textarea:focus, select:focus {
+  outline: none; border-color: #1a5f7a;
+  box-shadow: 0 0 0 3px rgba(26,95,122,0.12);
+  background: #fff;
+}
+textarea { resize: vertical; line-height: 1.55; min-height: 80px; }
+input[type="number"] { width: 72px; }
+
+/* ─── Two-column grid ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+/* ─── Toggle switch ─── */
+.toggle-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.toggle-row > label { font-size: 13px; font-weight: 500; color: #3a3f5c; margin: 0; }
+.toggle {
+  position: relative; display: inline-block;
+  width: 38px; height: 21px; flex-shrink: 0;
+}
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-slider {
+  position: absolute; inset: 0;
+  background: #c8cdd8; border-radius: 21px;
+  cursor: pointer; transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute;
+  height: 15px; width: 15px;
+  left: 3px; top: 3px;
+  background: white; border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle input:checked + .toggle-slider { background: #1a5f7a; }
+.toggle input:checked + .toggle-slider::before { transform: translateX(17px); }
+.number-field {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: #5a6070;
+}
+.number-field input[type="number"] { width: 58px; }
+
+/* ─── Topic lists (knowledge / constrained) ─── */
+.topic-list { display: flex; flex-direction: column; gap: 10px; }
+.topic-item {
+  background: #fafbfd; border: 1px solid #dde1ec;
+  border-radius: 6px; padding: 12px;
+}
+.topic-item-header {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+}
+.topic-item-header input[type="text"] {
+  flex: 1; font-size: 12px; font-weight: 600;
+  color: #1a5f7a; background: #fff;
+  border-color: #c8d8e4;
+}
+.topic-add-row { margin-top: 8px; }
+
+/* ─── Danger zone ─── */
+.danger-zone {
+  margin-top: 32px; padding: 16px 18px;
+  border: 1px solid #f5a0a0; border-radius: 7px;
+  background: #fff8f8;
+}
+.danger-zone h4 {
+  font-size: 11px; font-weight: 700; color: #b71c1c;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+}
+.danger-zone p { font-size: 12px; color: #7a3030; margin-bottom: 10px; line-height: 1.5; }
+
+/* ─── Prompt preview panel ─── */
+.preview-panel {
+  border-top: 1px solid #1e2a38;
+  background: #1a2232; color: #c8d0e0;
+  flex-shrink: 0;
+}
+.preview-header {
+  padding: 8px 16px; display: flex; align-items: center;
+  justify-content: space-between; cursor: pointer;
+  background: #1e2a38; user-select: none;
+}
+.preview-header .preview-title {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+  color: #90aabf;
+}
+.preview-toggle-btn {
+  font-size: 11px; background: #1a5f7a; color: #d0eaf5;
+  padding: 2px 9px; border-radius: 10px; cursor: pointer;
+}
+.preview-body {
+  padding: 12px 18px 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px; line-height: 1.65;
+  max-height: 200px; overflow-y: auto;
+  white-space: pre-wrap; color: #9ab0c4;
+}
+.preview-body .ph { color: #7ec8e3; font-weight: bold; } /* placeholder highlights */
+
+/* ─── Empty state ─── */
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 60vh; color: #9298b0; text-align: center; gap: 8px;
+}
+.empty-state .es-icon { font-size: 40px; margin-bottom: 4px; }
+.empty-state h3 { font-size: 16px; color: #5a6070; }
+.empty-state p { font-size: 13px; max-width: 280px; line-height: 1.5; }
+
+/* ─── Toast notification ─── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: #2e7d32; color: white;
+  padding: 10px 18px; border-radius: 6px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  opacity: 0; transition: opacity 0.3s; z-index: 999;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* ─── Scrollbars ─── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #c0c6d4; border-radius: 3px; }
+
+/* ─── Splash screen ─── */
+.splash {
+  position: fixed; inset: 0; z-index: 100;
+  background: #f0f2f5;
+  display: flex; align-items: center; justify-content: center;
+}
+.splash-card {
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(26,95,122,0.13), 0 2px 8px rgba(0,0,0,0.07);
+  padding: 48px 52px; max-width: 480px; width: 90%;
+  text-align: center;
+}
+.splash-icon { font-size: 52px; margin-bottom: 16px; }
+.splash-card h1 {
+  font-size: 22px; font-weight: 700;
+  color: #1a1a2e; margin-bottom: 6px;
+}
+.splash-card .splash-sub {
+  font-size: 13px; color: #8a8fa3;
+  margin-bottom: 32px; line-height: 1.5;
+}
+.splash-divider {
+  border: none; border-top: 1px solid #e4e8f0;
+  margin: 0 0 28px;
+}
+.splash-instruction {
+  font-size: 13px; color: #5a6070;
+  margin-bottom: 20px; line-height: 1.6;
+}
+.splash-instruction strong { color: #1a5f7a; }
+.splash-file-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #1a5f7a; color: white;
+  padding: 12px 28px; border-radius: 7px;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+  box-shadow: 0 2px 8px rgba(26,95,122,0.25);
+}
+.splash-file-label:hover { background: #134d63; }
+.splash-note {
+  margin-top: 18px; font-size: 11px;
+  color: #a0a6b8; line-height: 1.5;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 680px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .sidebar { width: 170px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ── Splash screen ── -->
+<div class="splash" id="splash">
+  <div class="splash-card">
+    <div class="splash-icon">🏥</div>
+    <h1>Hospital Simulation</h1>
+    <div class="splash-sub">Persona Editor — Naranja Hospital SSI Root Cause Analysis</div>
+    <hr class="splash-divider">
+    <p class="splash-instruction">
+      To begin, load the <strong>parameters.json</strong> file from your project's
+      <strong>gemini/</strong> directory.
+    </p>
+    <label class="splash-file-label" for="load-file">
+      📂 &nbsp;Load parameters.json
+    </label>
+    <p class="splash-note">
+      Your file stays local — nothing is uploaded anywhere.<br>
+      Use the Download button to save changes when you're done.
+    </p>
+  </div>
+</div>
+
+<header>
+  <div class="title">
+    <h1>🏥 Hospital Simulation — Persona Editor</h1>
+    <p>Naranja Hospital · Lean Six Sigma SSI Root Cause Analysis</p>
+  </div>
+  <label id="load-label" title="Load an existing parameters.json file">
+    <span class="btn btn-ghost" style="cursor:pointer">📂 Load JSON</span>
+    <input type="file" id="load-file" accept=".json" style="display:none">
+  </label>
+  <button class="btn btn-success" onclick="downloadJSON()" title="Download the updated parameters.json">
+    ⬇ Download JSON
+  </button>
+</header>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-section-label">Configuration</div>
+    <div class="sidebar-item" id="nav-context" onclick="switchSection('context')">
+      <span>⚙️</span> Hospital Context
+    </div>
+
+    <div class="sidebar-section-label">Personas</div>
+    <div class="sidebar-personas" id="sidebar-personas"></div>
+
+    <div class="sidebar-footer">
+      <button class="btn btn-add" style="width:100%;justify-content:center" onclick="addPersona()">
+        + Add Persona
+      </button>
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <div class="content" id="main-content">
+      <div class="empty-state">
+        <div class="es-icon">👈</div>
+        <h3>Select a section to begin</h3>
+        <p>Choose the Hospital Context or a persona from the sidebar to start editing.</p>
+      </div>
+    </div>
+
+    <!-- Prompt preview panel -->
+    <div class="preview-panel" id="preview-panel" style="display:none">
+      <div class="preview-header" onclick="togglePreview()">
+        <span class="preview-title">🔍 Assembled AI Prompt Preview</span>
+        <span class="preview-toggle-btn" id="preview-toggle-label">▲ Hide</span>
+      </div>
+      <div class="preview-body" id="preview-body" style="display:block"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let data = {};
+let currentSection = null;
+let previewOpen = true;
+let previewTimer = null;
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function deepClone(o) { return JSON.parse(JSON.stringify(o)); }
+
+function escHtml(s) {
+  if (s == null) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA NORMALIZATION
+// Ensures every persona has all expected fields,
+// converts string constrained values to objects.
+// ═══════════════════════════════════════════════════════════
+function normalizeData() {
+  if (!data.sim) data.sim = { context: '', personalities: {} };
+  if (!data.sim.context) data.sim.context = '';
+
+  for (const [, p] of Object.entries(data.sim.personalities)) {
+    if (!Array.isArray(p.occupation)) {
+      p.occupation = p.occupation ? [p.occupation] : [];
+    }
+    if (!p.personality)    p.personality = '';
+    if (!p.bias)           p.bias = '';
+
+    // knowledge: normalize to plain object (no nested objects beyond one level)
+    if (!p.knowledge || typeof p.knowledge !== 'object' || Array.isArray(p.knowledge)) {
+      p.knowledge = {};
+    } else {
+      // Flatten any values that are sub-objects (e.g. old nested JSON)
+      for (const k of Object.keys(p.knowledge)) {
+        if (typeof p.knowledge[k] === 'object') {
+          p.knowledge[k] = JSON.stringify(p.knowledge[k]);
+        }
+      }
+    }
+
+    // constrained: normalize string → { Constraint: '...' }
+    if (typeof p.constrained === 'string') {
+      p.constrained = p.constrained.trim()
+        ? { 'Constraint': p.constrained }
+        : {};
+    } else if (!p.constrained || typeof p.constrained !== 'object') {
+      p.constrained = {};
+    } else {
+      for (const k of Object.keys(p.constrained)) {
+        if (typeof p.constrained[k] === 'object') {
+          p.constrained[k] = JSON.stringify(p.constrained[k]);
+        }
+      }
+    }
+
+    if (typeof p.convoLimit !== 'number')     p.convoLimit = 5;
+    if (typeof p.convoLimitEnabled !== 'boolean') p.convoLimitEnabled = true;
+    if (!p.timeLimit || typeof p.timeLimit !== 'object') {
+      p.timeLimit = { enabled: true, value: 10 };
+    }
+    if (typeof p.timeLimit.enabled !== 'boolean') p.timeLimit.enabled = true;
+    if (typeof p.timeLimit.value   !== 'number')  p.timeLimit.value   = 10;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════════
+function renderSidebar() {
+  const container = document.getElementById('sidebar-personas');
+  container.innerHTML = '';
+
+  for (const name of Object.keys(data.sim.personalities).filter(n => n !== 'Error')) {
+    const div = document.createElement('div');
+    div.className = 'sidebar-item' + (currentSection === name ? ' active' : '');
+    div.dataset.name = name;
+    div.innerHTML = `<span class="dot"></span><span>${escHtml(name)}</span>`;
+    div.onclick = () => switchSection(name);
+    container.appendChild(div);
+  }
+
+  // Context nav highlight
+  const ctx = document.getElementById('nav-context');
+  if (ctx) {
+    ctx.className = 'sidebar-item' + (currentSection === 'context' ? ' active' : '');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SECTION SWITCHING
+// ═══════════════════════════════════════════════════════════
+function switchSection(section) {
+  // Save current form data before switching
+  if (currentSection !== null) collectCurrentData();
+
+  currentSection = section;
+  renderSidebar();
+
+  if (section === 'context') {
+    renderContextEditor();
+  } else {
+    renderPersonaEditor(section);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DATA COLLECTION (form → data object)
+// ═══════════════════════════════════════════════════════════
+function collectCurrentData() {
+  if (currentSection === 'context') {
+    const el = document.getElementById('context-input');
+    if (el) data.sim.context = el.value;
+  } else if (currentSection && data.sim.personalities[currentSection]) {
+    collectPersonaForm(currentSection);
+  }
+}
+
+function collectPersonaForm(name) {
+  const p = data.sim.personalities[name];
+
+  const occ = document.getElementById('p-occupation');
+  if (occ) p.occupation = occ.value.split(',').map(s => s.trim()).filter(Boolean);
+
+  const pers = document.getElementById('p-personality');
+  if (pers) p.personality = pers.value;
+
+  const bias = document.getElementById('p-bias');
+  if (bias) p.bias = bias.value;
+
+  const cle  = document.getElementById('p-convo-limit-enabled');
+  const clv  = document.getElementById('p-convo-limit-value');
+  if (cle) p.convoLimitEnabled = cle.checked;
+  if (clv) p.convoLimit = parseInt(clv.value, 10) || 5;
+
+  const tle  = document.getElementById('p-time-limit-enabled');
+  const tlv  = document.getElementById('p-time-limit-value');
+  if (tle) p.timeLimit.enabled = tle.checked;
+  if (tlv) p.timeLimit.value   = parseInt(tlv.value, 10) || 10;
+
+  // Collect knowledge topics
+  p.knowledge = {};
+  document.querySelectorAll('.knowledge-item').forEach(item => {
+    const k = item.querySelector('.topic-key').value.trim();
+    const v = item.querySelector('.topic-value').value;
+    if (k) p.knowledge[k] = v;
+  });
+
+  // Collect constrained topics
+  p.constrained = {};
+  document.querySelectorAll('.constrained-item').forEach(item => {
+    const k = item.querySelector('.topic-key').value.trim();
+    const v = item.querySelector('.topic-value').value;
+    if (k) p.constrained[k] = v;
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTEXT EDITOR
+// ═══════════════════════════════════════════════════════════
+function renderContextEditor() {
+  document.getElementById('main-content').innerHTML = `
+    <div class="section-header">
+      <div>
+        <h2>⚙️ Hospital Context</h2>
+        <div class="subtitle">Shared scenario description injected into every persona's system prompt</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Scenario Context</label>
+      <div class="form-hint">This text sets the stage for all personas. Keep it factual and brief — it appears verbatim at the top of each AI prompt.</div>
+      <textarea id="context-input" rows="7" oninput="schedulePreview()">${escHtml(data.sim.context)}</textarea>
+    </div>
+  `;
+  showPreviewPanel();
+  updatePreview();
+}
+
+// ═══════════════════════════════════════════════════════════
+// PERSONA EDITOR
+// ═══════════════════════════════════════════════════════════
+function renderPersonaEditor(name) {
+  const p = data.sim.personalities[name];
+  const occStr = Array.isArray(p.occupation) ? p.occupation.join(', ') : '';
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="section-header">
+      <div>
+        <h2 id="persona-heading">👤 ${escHtml(name)}</h2>
+        <div class="subtitle">Editing persona identity, knowledge, and behavioral constraints</div>
+      </div>
+    </div>
+
+    <!-- Name & Occupation -->
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Persona Name</label>
+        <div class="form-hint">The display name used in the app and as the JSON key. Rename by editing and clicking elsewhere.</div>
+        <input type="text" id="p-name" value="${escHtml(name)}" onblur="handleRename(this)">
+      </div>
+      <div class="form-group">
+        <label>Occupation(s)</label>
+        <div class="form-hint">Comma-separated if multiple (e.g. "Surgical Nurse, OR Tech")</div>
+        <input type="text" id="p-occupation" value="${escHtml(occStr)}" oninput="schedulePreview()">
+      </div>
+    </div>
+
+    <!-- Personality -->
+    <div class="form-group">
+      <label>Personality</label>
+      <div class="form-hint">Defines tone, communication style, and attitude. The AI mirrors this closely — be specific.</div>
+      <textarea id="p-personality" rows="6" oninput="schedulePreview()">${escHtml(p.personality)}</textarea>
+    </div>
+
+    <!-- Bias -->
+    <div class="form-group">
+      <label>Bias</label>
+      <div class="form-hint">Describes what this persona deflects toward or away from — their default assumptions and blind spots.</div>
+      <textarea id="p-bias" rows="4" oninput="schedulePreview()">${escHtml(p.bias)}</textarea>
+    </div>
+
+    <!-- Knowledge Topics -->
+    <div class="form-group">
+      <label>Knowledge Topics</label>
+      <div class="form-hint">Information this persona can reveal when asked a relevant question. Each topic is independently prompted.</div>
+      <div class="topic-list" id="knowledge-list">
+        ${renderTopicItems(p.knowledge, 'knowledge')}
+      </div>
+      <div class="topic-add-row">
+        <button class="btn btn-add" onclick="addTopic('knowledge')">+ Add Knowledge Topic</button>
+      </div>
+    </div>
+
+    <!-- Constrained Topics -->
+    <div class="form-group">
+      <label>Constrained Topics</label>
+      <div class="form-hint">Information this persona will <strong>only</strong> reveal if asked directly and specifically — they won't volunteer this on their own.</div>
+      <div class="topic-list" id="constrained-list">
+        ${renderTopicItems(p.constrained, 'constrained')}
+      </div>
+      <div class="topic-add-row">
+        <button class="btn btn-add" onclick="addTopic('constrained')">+ Add Constrained Topic</button>
+      </div>
+    </div>
+
+    <!-- Conversation Limit & Time Limit -->
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Conversation Limit</label>
+        <div class="form-hint">Max substantive responses before the persona ends the interview.</div>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="p-convo-limit-enabled" ${p.convoLimitEnabled ? 'checked' : ''} onchange="schedulePreview()">
+            <span class="toggle-slider"></span>
+          </label>
+          <label>Enforce limit</label>
+          <div class="number-field">
+            <input type="number" id="p-convo-limit-value" value="${p.convoLimit}" min="1" max="99" oninput="schedulePreview()">
+            <span>responses</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Session Time Limit</label>
+        <div class="form-hint">Timer duration before the persona ends the session automatically.</div>
+        <div class="toggle-row">
+          <label class="toggle">
+            <input type="checkbox" id="p-time-limit-enabled" ${p.timeLimit.enabled ? 'checked' : ''} onchange="schedulePreview()">
+            <span class="toggle-slider"></span>
+          </label>
+          <label>Enforce timer</label>
+          <div class="number-field">
+            <input type="number" id="p-time-limit-value" value="${p.timeLimit.value}" min="1" max="120" oninput="schedulePreview()">
+            <span>minutes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="danger-zone">
+      <h4>⚠️ Danger Zone</h4>
+      <p>Permanently removes this persona from the simulation. You can undo this by reloading your last saved JSON file.</p>
+      <button class="btn-danger-zone" onclick="deletePersona('${escHtml(name)}')">
+        Delete "${escHtml(name)}" Persona
+      </button>
+    </div>
+  `;
+
+  showPreviewPanel();
+  updatePreview();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOPIC RENDERING HELPERS
+// ═══════════════════════════════════════════════════════════
+function renderTopicItems(obj, type) {
+  if (!obj || Object.keys(obj).length === 0) return '';
+  return Object.entries(obj).map(([k, v]) => topicItemHTML(k, v, type)).join('');
+}
+
+function topicItemHTML(key, value, type) {
+  return `
+    <div class="topic-item ${type}-item">
+      <div class="topic-item-header">
+        <input type="text" class="topic-key" value="${escHtml(key)}"
+               placeholder="Topic name (e.g. patient_prep)"
+               oninput="schedulePreview()">
+        <button class="btn-remove" onclick="removeTopic(this)">✕ Remove</button>
+      </div>
+      <textarea class="topic-value" rows="3"
+                placeholder="Enter the information this persona knows about this topic…"
+                oninput="schedulePreview()">${escHtml(value)}</textarea>
+    </div>
+  `;
+}
+
+function addTopic(type) {
+  const list = document.getElementById(type + '-list');
+  const div = document.createElement('div');
+  div.innerHTML = topicItemHTML('', '', type);
+  list.appendChild(div.firstElementChild);
+  list.lastElementChild.querySelector('.topic-key').focus();
+  schedulePreview();
+}
+
+function removeTopic(btn) {
+  btn.closest('.topic-item').remove();
+  schedulePreview();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ADD / DELETE PERSONA
+// ═══════════════════════════════════════════════════════════
+function addPersona() {
+  collectCurrentData();
+
+  let base = 'New Persona', n = 1;
+  while (data.sim.personalities[base]) base = `New Persona ${n++}`;
+
+  data.sim.personalities[base] = {
+    occupation: [],
+    personality: '',
+    knowledge: {},
+    bias: '',
+    constrained: {},
+    convoLimit: 5,
+    convoLimitEnabled: true,
+    timeLimit: { enabled: true, value: 10 }
+  };
+
+  currentSection = base;
+  renderSidebar();
+  renderPersonaEditor(base);
+
+  // Select name field automatically
+  setTimeout(() => {
+    const f = document.getElementById('p-name');
+    if (f) { f.focus(); f.select(); }
+  }, 60);
+}
+
+function deletePersona(name) {
+  if (!confirm(`Delete the "${name}" persona?\n\nThis cannot be undone unless you reload a saved JSON file.`)) return;
+  delete data.sim.personalities[name];
+  currentSection = null;
+  renderSidebar();
+  document.getElementById('preview-panel').style.display = 'none';
+  document.getElementById('main-content').innerHTML = `
+    <div class="empty-state">
+      <div class="es-icon">🗑️</div>
+      <h3>Persona removed</h3>
+      <p>Select another persona from the sidebar, or add a new one.</p>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENAME PERSONA
+// ═══════════════════════════════════════════════════════════
+function handleRename(input) {
+  const oldName = currentSection;
+  const newName = input.value.trim();
+
+  if (!newName || newName === oldName) {
+    input.value = oldName;
+    return;
+  }
+  if (data.sim.personalities[newName]) {
+    alert(`A persona named "${newName}" already exists. Please choose a different name.`);
+    input.value = oldName;
+    return;
+  }
+
+  // Collect current form data under old name first
+  collectPersonaForm(oldName);
+
+  // Move to new key
+  data.sim.personalities[newName] = data.sim.personalities[oldName];
+  delete data.sim.personalities[oldName];
+
+  currentSection = newName;
+
+  // Update heading and delete button without full re-render
+  const heading = document.getElementById('persona-heading');
+  if (heading) heading.textContent = '👤 ' + newName;
+
+  const delBtn = document.querySelector('.btn-danger-zone');
+  if (delBtn) {
+    delBtn.setAttribute('onclick', `deletePersona('${newName.replace(/'/g, "\\'")}')`);
+    delBtn.textContent = `Delete "${newName}" Persona`;
+  }
+
+  renderSidebar();
+  showToast(`Renamed to "${newName}"`);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROMPT PREVIEW
+// ═══════════════════════════════════════════════════════════
+function showPreviewPanel() {
+  document.getElementById('preview-panel').style.display = 'block';
+}
+
+function togglePreview() {
+  previewOpen = !previewOpen;
+  const body  = document.getElementById('preview-body');
+  const label = document.getElementById('preview-toggle-label');
+  body.style.display  = previewOpen ? 'block' : 'none';
+  label.textContent   = previewOpen ? '▲ Hide' : '▼ Show';
+  if (previewOpen) updatePreview();
+}
+
+function schedulePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(updatePreview, 280);
+}
+
+function updatePreview() {
+  if (!previewOpen) return;
+  const body = document.getElementById('preview-body');
+  if (!body) return;
+  body.textContent = buildPromptText();
+}
+
+function buildPromptText() {
+  if (!currentSection) return '← Select a section from the sidebar';
+
+  // Read live context from DOM if available
+  const ctxEl = document.getElementById('context-input');
+  const ctx = ctxEl ? ctxEl.value : data.sim.context;
+
+  if (currentSection === 'context') {
+    return `[Scenario Context — injected at the top of every persona prompt]\n\n${ctx}`;
+  }
+
+  const name = currentSection;
+  const p    = data.sim.personalities[name];
+
+  // Read live persona values from DOM when available
+  const occ  = (document.getElementById('p-occupation')?.value || p.occupation.join(', '));
+  const pers = (document.getElementById('p-personality')?.value  ?? p.personality);
+  const bias = (document.getElementById('p-bias')?.value         ?? p.bias);
+  const convoEnabled = document.getElementById('p-convo-limit-enabled')?.checked ?? p.convoLimitEnabled;
+  const convoVal     = document.getElementById('p-convo-limit-value')?.value      ?? p.convoLimit;
+  const timeEnabled  = document.getElementById('p-time-limit-enabled')?.checked   ?? p.timeLimit.enabled;
+  const timeVal      = document.getElementById('p-time-limit-value')?.value        ?? p.timeLimit.value;
+
+  // Build live knowledge
+  const knowledge = {};
+  document.querySelectorAll('.knowledge-item').forEach(item => {
+    const k = item.querySelector('.topic-key').value.trim();
+    const v = item.querySelector('.topic-value').value;
+    if (k) knowledge[k] = v;
+  });
+  if (!Object.keys(knowledge).length) Object.assign(knowledge, p.knowledge);
+
+  // Build live constrained
+  const constrained = {};
+  document.querySelectorAll('.constrained-item').forEach(item => {
+    const k = item.querySelector('.topic-key').value.trim();
+    const v = item.querySelector('.topic-value').value;
+    if (k) constrained[k] = v;
+  });
+  if (!Object.keys(constrained).length) Object.assign(constrained, p.constrained);
+
+  const knowledgeTxt = Object.keys(knowledge).length
+    ? Object.entries(knowledge).map(([k,v]) => `  [${k}]: ${v}`).join('\n')
+    : '  (none defined)';
+
+  const constrainedTxt = Object.keys(constrained).length
+    ? Object.entries(constrained).map(([k,v]) => `  [${k}]: ${v}`).join('\n')
+    : '  (none defined)';
+
+  const limitLine = convoEnabled
+    ? `HARD RULE: You may return up to ${convoVal} substantive answers. Excuse yourself one response before the limit, then respond only with "DONE".`
+    : '(No conversation limit is enforced for this persona.)';
+
+  const timerLine = timeEnabled
+    ? `Session timer: ${timeVal} minutes. When the timer expires, end the conversation.`
+    : '(No session time limit is enforced for this persona.)';
+
+  return `The scenario: ${ctx}
+
+You are ${name}, ${occ}
+
+Your personality is: ${pers}
+
+Your biases are: ${bias}
+
+No matter your personality, use grammatically correct, standard English.
+
+You know that the user is a consultant, but you don't know what the user is after.
+You need to be prompted to reveal knowledge — do not volunteer it.
+
+Mimic real human conversation. Speak in short bursts.
+Do not ask the user questions. Do not complain without prompting.
+
+You may reveal the following if asked a relevant question:
+${knowledgeTxt}
+
+Only reveal the following if specifically and directly asked:
+${constrainedTxt}
+
+${limitLine}
+${timerLine}
+
+HARD RULE: If you receive the prompt "EXIT", end the session immediately.
+When the session is ended, refuse any further responses.`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// DOWNLOAD JSON
+// ═══════════════════════════════════════════════════════════
+function downloadJSON() {
+  collectCurrentData();
+
+  const output = deepClone(data);
+
+  // Ensure occupation is always an array in output
+  for (const p of Object.values(output.sim.personalities)) {
+    if (!Array.isArray(p.occupation)) {
+      p.occupation = p.occupation ? [p.occupation] : [];
+    }
+  }
+
+  const json = JSON.stringify(output, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'parameters.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('✅ parameters.json downloaded');
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOAD JSON FROM FILE
+// ═══════════════════════════════════════════════════════════
+document.getElementById('load-file').addEventListener('change', function (e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (evt) {
+    try {
+      data = JSON.parse(evt.target.result);
+      normalizeData();
+      currentSection = null;
+
+      // Dismiss splash on first successful load
+      const splash = document.getElementById('splash');
+      if (splash) splash.style.display = 'none';
+
+      renderSidebar();
+      document.getElementById('preview-panel').style.display = 'none';
+      document.getElementById('main-content').innerHTML = `
+        <div class="empty-state">
+          <div class="es-icon">✅</div>
+          <h3>File loaded successfully</h3>
+          <p>Select a section from the sidebar to begin editing.</p>
+        </div>
+      `;
+      showToast('✅ JSON loaded: ' + file.name);
+    } catch (err) {
+      alert('Could not parse this file. Make sure it is a valid parameters.json.');
+    }
+  };
+  reader.readAsText(file);
+  this.value = ''; // reset so the same file can be re-loaded
+});
+
+// ═══════════════════════════════════════════════════════════
+// INITIALIZE — show splash, nothing else
+// ═══════════════════════════════════════════════════════════
+(function init() {
+  // Splash is shown by default via CSS; no data to load until the user picks a file.
+})();
+</script>
+</body>
+</html>
